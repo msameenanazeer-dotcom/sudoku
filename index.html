@@ -1,0 +1,134 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku - Constraint Propagation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+    <h1>Sudoku Solver</h1>
+    <p>Constraint Propagation & Backtracking</p>
+</header>
+
+<main>
+
+    <section class="card">
+
+        <h2>Sudoku Grid</h2>
+
+        <div id="sudoku-grid" class="sudoku-grid"></div>
+
+        <div class="buttons">
+            <button id="solveBtn">▶ Solve Sudoku</button>
+            <button id="stepBtn">→ Next Step</button>
+            <button id="resetBtn">↻ Reset</button>
+            <button id="clearBtn">Clear</button>
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>Constraint Propagation</h2>
+
+        <div class="algorithm">
+
+            <div class="algorithm-step active">
+                <span>1</span>
+                <div>
+                    <strong>Generate Candidates</strong>
+                    <p>Find possible values for every empty cell.</p>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="algorithm-step">
+                <span>2</span>
+                <div>
+                    <strong>Naked Singles</strong>
+                    <p>Fill cells that have only one possible value.</p>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="algorithm-step">
+                <span>3</span>
+                <div>
+                    <strong>Hidden Singles</strong>
+                    <p>Find numbers that have only one possible location.</p>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="algorithm-step">
+                <span>4</span>
+                <div>
+                    <strong>Repeat Propagation</strong>
+                    <p>Continue eliminating candidates until no progress remains.</p>
+                </div>
+            </div>
+
+            <div class="arrow">↓</div>
+
+            <div class="algorithm-step">
+                <span>5</span>
+                <div>
+                    <strong>Backtracking</strong>
+                    <p>Try remaining candidates when logical propagation stops.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>Candidate Values</h2>
+
+        <p class="hint">
+            Click an empty cell to see its current possible values.
+        </p>
+
+        <div id="candidate-display">
+            Select a cell
+        </div>
+
+    </section>
+
+
+    <section class="card">
+
+        <h2>Solving Steps</h2>
+
+        <div id="steps">
+            <p class="empty-message">
+                Press <b>Solve Sudoku</b> to see the constraint propagation process.
+            </p>
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    <p>Sudoku Solver using Constraint Propagation</p>
+    <p>Artificial Intelligence Mini Project</p>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
+```
