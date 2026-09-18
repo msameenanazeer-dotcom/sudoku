@@ -1,17 +1,3 @@
-```javascript
-/*
-=========================================================
- Sudoku Solver
- Constraint Propagation + Backtracking
-=========================================================
-*/
-
-
-// -------------------------------------------------------
-// Initial Sudoku
-// 0 = empty cell
-// -------------------------------------------------------
-
 const originalBoard = [
     [5, 3, 0, 0, 7, 0, 0, 0, 0],
     [6, 0, 0, 1, 9, 5, 0, 0, 0],
@@ -26,35 +12,23 @@ const originalBoard = [
     [0, 0, 0, 0, 8, 0, 0, 7, 9]
 ];
 
-
-// Current working board
-
 let board = copyBoard(originalBoard);
-
-
-// Solving steps
-
 let solvingSteps = [];
-
 let currentStep = 0;
 
-let solving = false;
 
-
-// -------------------------------------------------------
-// Utility
-// -------------------------------------------------------
+// ===============================
+// Copy Board
+// ===============================
 
 function copyBoard(board) {
-
     return board.map(row => [...row]);
-
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Create Sudoku Grid
-// -------------------------------------------------------
+// ===============================
 
 function createGrid() {
 
@@ -71,7 +45,6 @@ function createGrid() {
             cell.className = "cell";
 
             cell.dataset.row = row;
-
             cell.dataset.col = col;
 
             const value = board[row][col];
@@ -81,21 +54,12 @@ function createGrid() {
                 cell.textContent = value;
 
                 if (originalBoard[row][col] !== 0) {
-
                     cell.classList.add("given");
-
-                } else {
-
-                    cell.classList.add("solved");
-
                 }
-
             }
 
-            cell.addEventListener("click", () => {
-
+            cell.addEventListener("click", function () {
                 selectCell(row, col);
-
             });
 
             grid.appendChild(cell);
@@ -104,52 +68,56 @@ function createGrid() {
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Select Cell
-// -------------------------------------------------------
+// ===============================
 
 function selectCell(row, col) {
 
     document.querySelectorAll(".cell").forEach(cell => {
-
         cell.classList.remove("selected");
-
     });
 
     const index = row * 9 + col;
 
-    const cell = document.querySelectorAll(".cell")[index];
+    const cells = document.querySelectorAll(".cell");
 
-    cell.classList.add("selected");
+    if (cells[index]) {
+        cells[index].classList.add("selected");
+    }
 
     showCandidates(row, col);
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Show Candidates
-// -------------------------------------------------------
+// ===============================
 
 function showCandidates(row, col) {
 
-    const display = document.getElementById("candidate-display");
+    const display =
+        document.getElementById("candidate-display");
 
     if (board[row][col] !== 0) {
 
         display.innerHTML =
-            `<strong>Cell (${row + 1}, ${col + 1})</strong><br>
-             Current value: ${board[row][col]}`;
+            `<strong>Cell (${row + 1}, ${col + 1})</strong>
+             <br>Current value: ${board[row][col]}`;
 
         return;
     }
 
-    const candidates = getCandidates(board, row, col);
+    const candidates =
+        getCandidates(board, row, col);
 
     if (candidates.length === 0) {
 
         display.innerHTML =
             `<strong>Cell (${row + 1}, ${col + 1})</strong>
-             <br><span style="color:red">No candidates</span>`;
+             <br><span style="color:red">
+             No candidates
+             </span>`;
 
         return;
     }
@@ -160,54 +128,48 @@ function showCandidates(row, col) {
 
     candidates.forEach(number => {
 
-        html += `<span class="candidate">${number}</span>`;
-
+        html +=
+            `<span class="candidate">${number}</span>`;
     });
 
     display.innerHTML = html;
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Check Valid Number
-// -------------------------------------------------------
+// ===============================
 
 function isValid(board, row, col, number) {
 
     // Row
-
     for (let c = 0; c < 9; c++) {
 
         if (board[row][c] === number) {
-
             return false;
         }
     }
 
-
     // Column
-
     for (let r = 0; r < 9; r++) {
 
         if (board[r][col] === number) {
-
             return false;
         }
     }
 
+    // 3 × 3 box
+    const startRow =
+        Math.floor(row / 3) * 3;
 
-    // 3x3 box
-
-    const startRow = Math.floor(row / 3) * 3;
-
-    const startCol = Math.floor(col / 3) * 3;
+    const startCol =
+        Math.floor(col / 3) * 3;
 
     for (let r = startRow; r < startRow + 3; r++) {
 
         for (let c = startCol; c < startCol + 3; c++) {
 
             if (board[r][c] === number) {
-
                 return false;
             }
         }
@@ -217,9 +179,9 @@ function isValid(board, row, col, number) {
 }
 
 
-// -------------------------------------------------------
-// Get Candidate Values
-// -------------------------------------------------------
+// ===============================
+// Get Candidates
+// ===============================
 
 function getCandidates(board, row, col) {
 
@@ -228,7 +190,6 @@ function getCandidates(board, row, col) {
     for (let number = 1; number <= 9; number++) {
 
         if (isValid(board, row, col, number)) {
-
             candidates.push(number);
         }
     }
@@ -237,9 +198,9 @@ function getCandidates(board, row, col) {
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Find Empty Cell
-// -------------------------------------------------------
+// ===============================
 
 function findEmpty(board) {
 
@@ -248,7 +209,6 @@ function findEmpty(board) {
         for (let col = 0; col < 9; col++) {
 
             if (board[row][col] === 0) {
-
                 return [row, col];
             }
         }
@@ -258,30 +218,25 @@ function findEmpty(board) {
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Add Step
-// -------------------------------------------------------
+// ===============================
 
 function addStep(type, message, row, col, value) {
 
     solvingSteps.push({
-
         type: type,
-
         message: message,
-
         row: row,
-
         col: col,
-
         value: value
     });
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Naked Single
-// -------------------------------------------------------
+// ===============================
 
 function applyNakedSingle(board) {
 
@@ -302,7 +257,7 @@ function applyNakedSingle(board) {
 
                     addStep(
                         "naked",
-                        `Naked Single: Cell (${row + 1}, ${col + 1}) can only be ${value}.`,
+                        `Naked Single: Row ${row + 1}, Column ${col + 1} = ${value}`,
                         row,
                         col,
                         value
@@ -318,30 +273,26 @@ function applyNakedSingle(board) {
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Hidden Single
-// -------------------------------------------------------
+// ===============================
 
 function applyHiddenSingle(board) {
 
-
-    // -------------------------------
-    // Rows
-    // -------------------------------
-
+    // ROWS
     for (let row = 0; row < 9; row++) {
 
         for (let number = 1; number <= 9; number++) {
 
-            let locations = [];
+            const locations = [];
 
             for (let col = 0; col < 9; col++) {
 
                 if (
                     board[row][col] === 0 &&
-                    getCandidates(board, row, col).includes(number)
+                    getCandidates(board, row, col)
+                        .includes(number)
                 ) {
-
                     locations.push([row, col]);
                 }
             }
@@ -354,7 +305,7 @@ function applyHiddenSingle(board) {
 
                 addStep(
                     "hidden",
-                    `Hidden Single: ${number} can only be placed in Row ${r + 1}, Column ${c + 1}.`,
+                    `Hidden Single: ${number} can only go in Row ${r + 1}, Column ${c + 1}`,
                     r,
                     c,
                     number
@@ -366,23 +317,20 @@ function applyHiddenSingle(board) {
     }
 
 
-    // -------------------------------
-    // Columns
-    // -------------------------------
-
+    // COLUMNS
     for (let col = 0; col < 9; col++) {
 
         for (let number = 1; number <= 9; number++) {
 
-            let locations = [];
+            const locations = [];
 
             for (let row = 0; row < 9; row++) {
 
                 if (
                     board[row][col] === 0 &&
-                    getCandidates(board, row, col).includes(number)
+                    getCandidates(board, row, col)
+                        .includes(number)
                 ) {
-
                     locations.push([row, col]);
                 }
             }
@@ -395,7 +343,7 @@ function applyHiddenSingle(board) {
 
                 addStep(
                     "hidden",
-                    `Hidden Single: ${number} can only be placed in Row ${r + 1}, Column ${c + 1}.`,
+                    `Hidden Single: ${number} can only go in Row ${r + 1}, Column ${c + 1}`,
                     r,
                     c,
                     number
@@ -407,17 +355,14 @@ function applyHiddenSingle(board) {
     }
 
 
-    // -------------------------------
-    // 3x3 Boxes
-    // -------------------------------
-
+    // BOXES
     for (let boxRow = 0; boxRow < 9; boxRow += 3) {
 
         for (let boxCol = 0; boxCol < 9; boxCol += 3) {
 
             for (let number = 1; number <= 9; number++) {
 
-                let locations = [];
+                const locations = [];
 
                 for (
                     let row = boxRow;
@@ -433,9 +378,9 @@ function applyHiddenSingle(board) {
 
                         if (
                             board[row][col] === 0 &&
-                            getCandidates(board, row, col).includes(number)
+                            getCandidates(board, row, col)
+                                .includes(number)
                         ) {
-
                             locations.push([row, col]);
                         }
                     }
@@ -449,7 +394,7 @@ function applyHiddenSingle(board) {
 
                     addStep(
                         "hidden",
-                        `Hidden Single: ${number} has only one position in the 3×3 box containing Row ${r + 1}, Column ${c + 1}.`,
+                        `Hidden Single: ${number} found in 3×3 box at Row ${r + 1}, Column ${c + 1}`,
                         r,
                         c,
                         number
@@ -465,25 +410,19 @@ function applyHiddenSingle(board) {
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Constraint Propagation
-// -------------------------------------------------------
+// ===============================
 
 function constraintPropagation(board) {
 
     while (true) {
 
-        // Naked Single
-
         if (applyNakedSingle(board)) {
-
             continue;
         }
 
-        // Hidden Single
-
         if (applyHiddenSingle(board)) {
-
             continue;
         }
 
@@ -492,33 +431,24 @@ function constraintPropagation(board) {
 }
 
 
-// -------------------------------------------------------
-// Backtracking Solver
-// -------------------------------------------------------
+// ===============================
+// Backtracking
+// ===============================
 
-function solveWithBacktracking(board) {
-
-
-    // First apply constraint propagation
+function solve(board) {
 
     constraintPropagation(board);
-
-
-    // Check whether solved
 
     const empty = findEmpty(board);
 
     if (empty === null) {
-
         return true;
     }
-
 
     const [row, col] = empty;
 
     const candidates =
         getCandidates(board, row, col);
-
 
     for (const number of candidates) {
 
@@ -526,61 +456,59 @@ function solveWithBacktracking(board) {
 
         addStep(
             "backtrack",
-            `Backtracking: Try ${number} at Row ${row + 1}, Column ${col + 1}.`,
+            `Backtracking: Trying ${number} at Row ${row + 1}, Column ${col + 1}`,
             row,
             col,
             number
         );
 
-
-        if (solveWithBacktracking(board)) {
-
+        if (solve(board)) {
             return true;
         }
-
 
         board[row][col] = 0;
 
         addStep(
             "backtrack",
-            `Backtracking: ${number} was rejected. Undo Row ${row + 1}, Column ${col + 1}.`,
+            `Backtracking: Undo ${number} at Row ${row + 1}, Column ${col + 1}`,
             row,
             col,
             0
         );
     }
 
-
     return false;
 }
 
 
-// -------------------------------------------------------
+// ===============================
 // Update Grid
-// -------------------------------------------------------
+// ===============================
 
 function updateGrid() {
 
-    const cells = document.querySelectorAll(".cell");
+    const cells =
+        document.querySelectorAll(".cell");
 
     cells.forEach(cell => {
 
-        const row = Number(cell.dataset.row);
+        const row =
+            Number(cell.dataset.row);
 
-        const col = Number(cell.dataset.col);
+        const col =
+            Number(cell.dataset.col);
 
         cell.textContent = "";
 
         cell.classList.remove(
             "solved",
-            "current",
-            "error"
+            "current"
         );
-
 
         if (board[row][col] !== 0) {
 
-            cell.textContent = board[row][col];
+            cell.textContent =
+                board[row][col];
 
             if (originalBoard[row][col] === 0) {
 
@@ -591,37 +519,9 @@ function updateGrid() {
 }
 
 
-// -------------------------------------------------------
-// Highlight Current Step
-// -------------------------------------------------------
-
-function highlightStep(step) {
-
-    const cells = document.querySelectorAll(".cell");
-
-    cells.forEach(cell => {
-
-        cell.classList.remove("current");
-
-    });
-
-
-    if (!step) {
-
-        return;
-    }
-
-
-    const index =
-        step.row * 9 + step.col;
-
-    cells[index].classList.add("current");
-}
-
-
-// -------------------------------------------------------
+// ===============================
 // Display Steps
-// -------------------------------------------------------
+// ===============================
 
 function displaySteps() {
 
@@ -629,16 +529,6 @@ function displaySteps() {
         document.getElementById("steps");
 
     container.innerHTML = "";
-
-
-    if (solvingSteps.length === 0) {
-
-        container.innerHTML =
-            `<p class="empty-message">No solving steps yet.</p>`;
-
-        return;
-    }
-
 
     solvingSteps.forEach((step, index) => {
 
@@ -654,301 +544,118 @@ function displaySteps() {
 
         container.appendChild(div);
     });
-
-
-    // Scroll to current step
-
-    if (currentStep > 0) {
-
-        const items =
-            container.querySelectorAll(".step-item");
-
-        if (items[currentStep - 1]) {
-
-            items[currentStep - 1].scrollIntoView({
-                behavior: "smooth",
-                block: "center"
-            });
-        }
-    }
 }
 
 
-// -------------------------------------------------------
-// Update Algorithm Visualizer
-// -------------------------------------------------------
-
-function updateAlgorithm(step) {
-
-    const algorithmSteps =
-        document.querySelectorAll(".algorithm-step");
-
-
-    algorithmSteps.forEach(item => {
-
-        item.classList.remove("active");
-
-    });
-
-
-    if (!step) {
-
-        algorithmSteps[0].classList.add("active");
-
-        return;
-    }
-
-
-    if (step.type === "naked") {
-
-        algorithmSteps[1].classList.add("active");
-
-    } else if (step.type === "hidden") {
-
-        algorithmSteps[2].classList.add("active");
-
-    } else if (step.type === "backtrack") {
-
-        algorithmSteps[4].classList.add("active");
-
-    }
-}
-
-
-// -------------------------------------------------------
+// ===============================
 // Solve Button
-// -------------------------------------------------------
+// ===============================
 
 document
     .getElementById("solveBtn")
     .addEventListener("click", function () {
 
-
-        if (solving) {
-
-            return;
-        }
-
-
-        solving = true;
-
-
         board =
             copyBoard(originalBoard);
-
 
         solvingSteps = [];
 
         currentStep = 0;
 
-
-        // Create a copy for solving
-
-        const solvingBoard =
-            copyBoard(board);
-
+        const solutionBoard =
+            copyBoard(originalBoard);
 
         const solved =
-            solveWithBacktracking(solvingBoard);
-
+            solve(solutionBoard);
 
         if (!solved) {
 
-            alert("This Sudoku has no solution.");
-
-            solving = false;
+            alert("No solution exists.");
 
             return;
         }
 
-
-        // Save final solution
-
         board =
-            copyBoard(solvingBoard);
-
-
-        displaySteps();
-
-
-        // Show first step
-
-        if (solvingSteps.length > 0) {
-
-            currentStep = 1;
-
-            const step =
-                solvingSteps[0];
-
-            highlightStep(step);
-
-            updateAlgorithm(step);
-        }
-
+            copyBoard(solutionBoard);
 
         updateGrid();
 
+        displaySteps();
 
-        solving = false;
+        document
+            .querySelectorAll(".algorithm-step")
+            .forEach(step => {
+
+                step.classList.remove("active");
+
+            });
+
+        document
+            .querySelector(".algorithm-step")
+            .classList.add("completed");
     });
 
 
-// -------------------------------------------------------
-// Next Step Button
-// -------------------------------------------------------
+// ===============================
+// Next Step
+// ===============================
 
 document
     .getElementById("stepBtn")
     .addEventListener("click", function () {
 
-
         if (solvingSteps.length === 0) {
 
-            // Generate solving steps first
-
-            board =
+            const tempBoard =
                 copyBoard(originalBoard);
 
             solvingSteps = [];
 
+            solve(tempBoard);
+
+            board =
+                copyBoard(originalBoard);
+
             currentStep = 0;
-
-
-            const tempBoard =
-                copyBoard(board);
-
-
-            const solved =
-                solveWithBacktracking(tempBoard);
-
-
-            if (!solved) {
-
-                alert("This Sudoku has no solution.");
-
-                return;
-            }
-
 
             displaySteps();
         }
-
 
         if (currentStep < solvingSteps.length) {
 
             const step =
                 solvingSteps[currentStep];
 
+            if (step.value !== 0) {
 
-            board[step.row][step.col] =
-                step.value;
-
+                board[step.row][step.col] =
+                    step.value;
+            }
 
             currentStep++;
 
-
-            highlightStep(step);
-
-            updateAlgorithm(step);
-
             updateGrid();
 
+            const cells =
+                document.querySelectorAll(".cell");
 
-            // Update step display
-
-            const items =
-                document.querySelectorAll(".step-item");
-
-
-            items.forEach((item, index) => {
-
-                item.style.opacity =
-                    index < currentStep ? "1" : "0.45";
-
+            cells.forEach(cell => {
+                cell.classList.remove("current");
             });
 
+            const index =
+                step.row * 9 + step.col;
 
-        } else {
-
-            board =
-                getFinalSolution();
-
-            updateGrid();
-
-            document
-                .querySelectorAll(".cell")
-                .forEach(cell => {
-
-                    cell.classList.remove("current");
-
-                });
-
-
-            document
-                .querySelectorAll(".algorithm-step")
-                .forEach(step => {
-
-                    step.classList.remove("active");
-
-                    step.classList.add("completed");
-
-                });
+            if (cells[index]) {
+                cells[index].classList.add("current");
+            }
         }
     });
 
 
-// -------------------------------------------------------
-// Get Final Solution
-// -------------------------------------------------------
-
-function getFinalSolution() {
-
-    const result =
-        copyBoard(originalBoard);
-
-    solveForFinal(result);
-
-    return result;
-}
-
-
-function solveForFinal(board) {
-
-    constraintPropagation(board);
-
-    const empty =
-        findEmpty(board);
-
-    if (empty === null) {
-
-        return true;
-    }
-
-    const [row, col] = empty;
-
-    const candidates =
-        getCandidates(board, row, col);
-
-
-    for (const number of candidates) {
-
-        board[row][col] = number;
-
-        if (solveForFinal(board)) {
-
-            return true;
-        }
-
-        board[row][col] = 0;
-    }
-
-    return false;
-}
-
-
-// -------------------------------------------------------
+// ===============================
 // Reset
-// -------------------------------------------------------
+// ===============================
 
 document
     .getElementById("resetBtn")
@@ -963,34 +670,21 @@ document
 
         createGrid();
 
-        document.getElementById("steps").innerHTML =
+        document.getElementById("candidate-display")
+            .innerHTML = "Select a cell";
+
+        document.getElementById("steps")
+            .innerHTML =
             `<p class="empty-message">
-                Press <b>Solve Sudoku</b> to see the
-                constraint propagation process.
-             </p>`;
-
-        document.getElementById("candidate-display").innerHTML =
-            "Select a cell";
-
-
-        document
-            .querySelectorAll(".algorithm-step")
-            .forEach(step => {
-
-                step.classList.remove("active", "completed");
-
-            });
-
-
-        document
-            .querySelector(".algorithm-step")
-            .classList.add("active");
+                Press <b>Solve Sudoku</b> to see
+                the solving process.
+            </p>`;
     });
 
 
-// -------------------------------------------------------
+// ===============================
 // Clear
-// -------------------------------------------------------
+// ===============================
 
 document
     .getElementById("clearBtn")
@@ -1008,16 +702,16 @@ document
 
         createGrid();
 
-        document.getElementById("steps").innerHTML =
+        document.getElementById("steps")
+            .innerHTML =
             `<p class="empty-message">
-                Enter a Sudoku puzzle or reset the board.
-             </p>`;
+                Board cleared.
+            </p>`;
     });
 
 
-// -------------------------------------------------------
-// Initial Display
-// -------------------------------------------------------
+// ===============================
+// Start Website
+// ===============================
 
 createGrid();
-```
